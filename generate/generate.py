@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
         num_props = len(args.props)
         print("properties are ")
-        print(arg.props)
+        print(args.props)
         print("required weights are ")
         print(args.model_weight)
 
