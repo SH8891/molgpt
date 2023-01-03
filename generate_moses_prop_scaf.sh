@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Single property and scaffold based generation
-python generate/generate.py --model_weight moses_scaf_wholeseq_tpsa.pt --props tpsa --scaffold --data_name moses2 --csv_name moses_scaf_tpsa_temp1 --gen_size 10000 --batch_size 512
-python generate/generate.py --model_weight moses_scaf_wholeseq_sas.pt --props sas --scaffold --data_name moses2 --csv_name moses_scaf_sas_temp1 --gen_size 10000 --batch_size 512
-python generate/generate.py --model_weight moses_scaf_wholeseq_logp_newtokens.pt --props logp --scaffold --data_name moses2 --csv_name moses_scaf_logp_temp1 --gen_size 10000 --batch_size 512
+#python generate/generate.py --model_weight moses_scaf_wholeseq_tpsa.pt --props tpsa --scaffold --data_name moses2 --csv_name moses_scaf_tpsa_temp1 --gen_size 10000 --batch_size 512
+#python generate/generate.py --model_weight moses_scaf_wholeseq_sas.pt --props sas --scaffold --data_name moses2 --csv_name moses_scaf_sas_temp1 --gen_size 10000 --batch_size 512
+#python generate/generate.py --model_weight moses_scaf_wholeseq_logp_newtokens.pt --props logp --scaffold --data_name moses2 --csv_name moses_scaf_logp_temp1 --gen_size 10000 --batch_size 512
 python generate/generate.py --model_weight moses_scaf_wholeseq_qed.pt --props qed --scaffold --data_name moses2 --csv_name moses_scaf_qed_temp1 --gen_size 10000 --batch_size 512
 
 

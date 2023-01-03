@@ -57,9 +57,10 @@ if __name__ == '__main__':
         context = "C"
 
 
-        data = pd.read_csv('/home/viraj.bagal/viraj/ligflow/Code/code/cond_gpt/datasets/' + args.data_name + '.csv')
+        data = pd.read_csv('/content/molgpt/datasets/' + args.data_name + '.csv')
         data = data.dropna(axis=0).reset_index(drop=True)
         data.columns = data.columns.str.lower()
+        data=data.rename({'scaffold':'scaffold_smiles'},axis=1)
 
         if 'moses' in args.data_name:
             smiles = data[data['split']!='test_scaffolds']['smiles']   # needed for moses
@@ -125,7 +126,7 @@ if __name__ == '__main__':
         model = GPT(mconf)
 
 
-        model.load_state_dict(torch.load('/home/viraj.bagal/viraj/ligflow/Code/code/cond_gpt/weights/' + args.model_weight))
+        model.load_state_dict(torch.load('/content/molgpt/weights/' + args.model_weight))
         model.to('cuda')
         print('Model loaded')
 

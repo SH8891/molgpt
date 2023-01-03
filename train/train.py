@@ -61,6 +61,7 @@ if __name__ == '__main__':
     data = data.dropna(axis=0).reset_index(drop=True)
     # data = data.sample(frac = 0.1).reset_index(drop=True)
     data.columns = data.columns.str.lower()
+    data=data.rename({'scaffold':'scaffold_smiles'},axis=1)
 
     if 'moses' in args.data_name:
         train_data = data[data['split'] == 'train'].reset_index(
