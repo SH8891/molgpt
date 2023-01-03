@@ -99,15 +99,15 @@ if __name__ == '__main__':
         else:
             scaffold_max_len = 100
 
-        # content = ' '.join(smiles + scaf)
-        # chars = sorted(list(set(regex.findall(content))))
+        content = ' '.join(smiles + scaf)
+        chars = sorted(list(set(regex.findall(content))))
 
-        # stoi = { ch:i for i,ch in enumerate(chars) }
-
+        stoi = { ch:i for i,ch in enumerate(chars) }
+        stoi['<']=25
         # with open(f'{args.data_name}_stoi.json', 'w') as f:
         #         json.dump(stoi, f)
 
-        stoi = json.load(open(f'{args.data_name}_stoi.json', 'r'))
+        #stoi = json.load(open(f'{args.data_name}_stoi.json', 'r'))
 
         # itos = { i:ch for i,ch in enumerate(chars) }
         itos = { i:ch for ch,i in stoi.items() }
@@ -120,6 +120,11 @@ if __name__ == '__main__':
         #print(condition)
 
         num_props = len(args.props)
+        print("properties are ")
+        print(arg.props)
+        print("required weights are ")
+        print(args.model_weight)
+
         mconf = GPTConfig(args.vocab_size, args.block_size, num_props = num_props,
                        n_layer=args.n_layer, n_head=args.n_head, n_embd=args.n_embd, scaffold = args.scaffold, scaffold_maxlen = scaffold_max_len,
                        lstm = args.lstm, lstm_layers = args.lstm_layers)
@@ -200,6 +205,8 @@ if __name__ == '__main__':
                             if mol:
                                     molecules.append(mol)
 
+            print("molecules valid are")
+            print(len(molecules))
             "Valid molecules % = {}".format(len(molecules))
 
             mol_dict = []
