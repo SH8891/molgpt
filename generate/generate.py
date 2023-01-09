@@ -98,12 +98,13 @@ if __name__ == '__main__':
             scaffold_max_len = 98
         else:
             scaffold_max_len = 100
-
-        content = ' '.join(smiles + scaf)
+        
+        pad=str('<')
+        content = ' '.join(smiles + scaf + pad)
         chars = sorted(list(set(regex.findall(content))))
 
         stoi = { ch:i for i,ch in enumerate(chars) }
-        stoi['<']=25
+        #stoi['<']=25
         # with open(f'{args.data_name}_stoi.json', 'w') as f:
         #         json.dump(stoi, f)
 
