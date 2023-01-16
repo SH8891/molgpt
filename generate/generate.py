@@ -467,7 +467,7 @@ if __name__ == '__main__':
 
 
         results = pd.concat(all_dfs)
-        results.to_csv('gen_csv_again/' + args.csv_name + '.csv', index = False)
+        results.to_csv('results/' + args.csv_name + '.csv', index = False)
 
         unique_smiles = list(set(results['smiles']))
         canon_smiles = [canonic_smiles(s) for s in results['smiles']]
