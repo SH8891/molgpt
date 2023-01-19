@@ -412,7 +412,7 @@ if __name__ == '__main__':
                                 if mol:
                                         molecules.append(mol)                                
                                 else:
-                                        non_valid_molecules.append(mol)
+                                        non_valid_molecules.append(completion)
 
                     "Valid molecules % = {}".format(len(molecules))
 
