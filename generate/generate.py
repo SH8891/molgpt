@@ -411,7 +411,8 @@ if __name__ == '__main__':
                                 mol = get_mol(completion)
                                 if mol:
                                         molecules.append(mol)                                
-
+                                else:
+                                        non_valid_molecules.append(mol)
 
                     "Valid molecules % = {}".format(len(molecules))
 
@@ -425,6 +426,7 @@ if __name__ == '__main__':
 
 
                     results = pd.DataFrame(mol_dict)
+                    error_results=pd.DataFrame(non_valid_molecules)
 
                     # metrics = moses.get_all_metrics(gen_smiles)
                     # metrics['temperature'] = temp
@@ -468,6 +470,7 @@ if __name__ == '__main__':
 
         results = pd.concat(all_dfs)
         results.to_csv('results/' + args.csv_name + '.csv', index = False)
+        error_results.to_csv('results/' + args.csv_name + '_INVALID.csv', index = False)
 
         unique_smiles = list(set(results['smiles']))
         canon_smiles = [canonic_smiles(s) for s in results['smiles']]
@@ -476,6 +479,7 @@ if __name__ == '__main__':
                 novel_ratio = check_novelty(unique_smiles, set(data[data['split']=='train']['smiles']))    # replace 'source' with 'split' for moses
         else:
                 novel_ratio = check_novelty(unique_smiles, set(data[data['source']=='train']['smiles']))    # replace 'source' with 'split' for moses
+
                
 
         print('Valid ratio: ', np.round(len(results)/(args.batch_size*gen_iter*count), 3))
