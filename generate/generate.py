@@ -415,58 +415,59 @@ if __name__ == '__main__':
                                         non_valid_molecules.append(completion)
 
                     "Valid molecules % = {}".format(len(molecules))
+                    if len(molecules)!=0:    
+                            mol_dict = []
 
-                    mol_dict = []
+                            for i in molecules:
+                                    mol_dict.append({'molecule' : i, 'smiles': Chem.MolToSmiles(i)})
 
-                    for i in molecules:
-                            mol_dict.append({'molecule' : i, 'smiles': Chem.MolToSmiles(i)})
-
-                    # for i in gen_smiles:
-                    #       mol_dict.append({'temperature' : temp, 'smiles': i})
+                            # for i in gen_smiles:
+                            #       mol_dict.append({'temperature' : temp, 'smiles': i})
 
 
-                    results = pd.DataFrame(mol_dict)
-                    error_results=pd.DataFrame(non_valid_molecules)
+                            results = pd.DataFrame(mol_dict)
+                            error_results=pd.DataFrame(non_valid_molecules)
 
-                    # metrics = moses.get_all_metrics(gen_smiles)
-                    # metrics['temperature'] = temp
+                            # metrics = moses.get_all_metrics(gen_smiles)
+                            # metrics['temperature'] = temp
 
-                    # with open(f'gen_csv/moses_metrics_7_top10.json', 'w') as file:
-                    #       json.dump(metrics, file)
+                            # with open(f'gen_csv/moses_metrics_7_top10.json', 'w') as file:
+                            #       json.dump(metrics, file)
 
-                    canon_smiles = [canonic_smiles(s) for s in results['smiles']]
-                    unique_smiles = list(set(canon_smiles))
-                    if 'moses' in args.data_name:
-                            novel_ratio = check_novelty(unique_smiles, set(data[data['split']=='train']['smiles']))   # replace 'source' with 'split' for moses
+                            canon_smiles = [canonic_smiles(s) for s in results['smiles']]
+                            unique_smiles = list(set(canon_smiles))
+                            if 'moses' in args.data_name:
+                                    novel_ratio = check_novelty(unique_smiles, set(data[data['split']=='train']['smiles']))   # replace 'source' with 'split' for moses
+                            else:
+                                    novel_ratio = check_novelty(unique_smiles, set(data[data['source']=='train']['smiles']))   # replace 'source' with 'split' for moses
+
+
+                            print(f'Condition: {c}')
+                            print(f'Scaffold: {j}')
+                            print('Valid ratio: ', np.round(len(results)/(args.batch_size*gen_iter), 3))
+                            print('Unique ratio: ', np.round(len(unique_smiles)/len(results), 3))
+                            print('Novelty ratio: ', np.round(novel_ratio/100, 3))
+
+
+                            if len(args.props) == 1:
+                                    results['condition'] = c
+                            elif len(args.props) == 2:
+                                    results['condition'] = str((c[0], c[1]))
+                            else:
+                                    results['condition'] = str((c[0], c[1], c[2]))
+
+                            results['scaffold_cond'] = j
+                            results['qed'] = results['molecule'].apply(lambda x: QED.qed(x) )
+                            results['sas'] = results['molecule'].apply(lambda x: sascorer.calculateScore(x))
+                            results['logp'] = results['molecule'].apply(lambda x: Crippen.MolLogP(x) )
+                            results['tpsa'] = results['molecule'].apply(lambda x: CalcTPSA(x) )
+                            # results['temperature'] = temp
+                            results['validity'] = np.round(len(results)/(args.batch_size*gen_iter), 3)
+                            results['unique'] = np.round(len(unique_smiles)/len(results), 3)
+                            results['novelty'] = np.round(novel_ratio/100, 3)
+                            all_dfs.append(results)
                     else:
-                            novel_ratio = check_novelty(unique_smiles, set(data[data['source']=='train']['smiles']))   # replace 'source' with 'split' for moses
-
-
-                    print(f'Condition: {c}')
-                    print(f'Scaffold: {j}')
-                    print('Valid ratio: ', np.round(len(results)/(args.batch_size*gen_iter), 3))
-                    print('Unique ratio: ', np.round(len(unique_smiles)/len(results), 3))
-                    print('Novelty ratio: ', np.round(novel_ratio/100, 3))
-
-                    
-                    if len(args.props) == 1:
-                            results['condition'] = c
-                    elif len(args.props) == 2:
-                            results['condition'] = str((c[0], c[1]))
-                    else:
-                            results['condition'] = str((c[0], c[1], c[2]))
-                            
-                    results['scaffold_cond'] = j
-                    results['qed'] = results['molecule'].apply(lambda x: QED.qed(x) )
-                    results['sas'] = results['molecule'].apply(lambda x: sascorer.calculateScore(x))
-                    results['logp'] = results['molecule'].apply(lambda x: Crippen.MolLogP(x) )
-                    results['tpsa'] = results['molecule'].apply(lambda x: CalcTPSA(x) )
-                    # results['temperature'] = temp
-                    results['validity'] = np.round(len(results)/(args.batch_size*gen_iter), 3)
-                    results['unique'] = np.round(len(unique_smiles)/len(results), 3)
-                    results['novelty'] = np.round(novel_ratio/100, 3)
-                    all_dfs.append(results)
-
+                        print("NO VALID MOLECULES WERE GENERATED")
 
         results = pd.concat(all_dfs)
         results.to_csv('results/' + args.csv_name + '.csv', index = False)
